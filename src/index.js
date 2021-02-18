@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import SeasonDisplay from './SeasonDisplay';
+import Spinner from './Spinner';
 import reportWebVitals from './reportWebVitals';
 
 class App extends React.Component {
@@ -13,20 +13,26 @@ class App extends React.Component {
           position => this.setState({ lat: position.coords.latitude}),
           err => this.setState({ errorMessage: err.message})
       );
-  }
+    }
+
+    renderContent() {
+      if(this.state.errorMessage && !this.state.lat) {
+        return <div>Error: {this.state.errorMessage}</div>
+    } 
+    
+    if(this.state.lat && !this.state.errorMessage) {
+        return <SeasonDisplay lat={this.state.lat}/>
+    }
+
+    return <Spinner message="Please accept location request" /> 
+    }
 
   render() {
-         if(this.state.errorMessage && !this.state.lat) {
-             return <div>Error: {this.state.errorMessage}</div>
-         } 
-         
-         if(this.state.lat && !this.state.errorMessage) {
-             return <SeasonDisplay lat={this.state.lat}/>
-         }
-
-         return <div>Loading...</div>
-          
-  }
+    return (
+      <div>{this.renderContent()}</div>
+    );
+  };                  
+  
 }
 
 
